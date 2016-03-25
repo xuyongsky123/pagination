@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>  
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>手机端下拉分页异步加载数据</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery.pagination.js"></script>
+</head>
+<body>
+	<div class="p_container">
+		<div class="i_container">
+			<div class="p_lists">
+
+				<!--can modify - begin-->
+				<!--<div class="numSingle">
+					<div class="rowContainer">
+						<div class="col-2">18911594604</div>
+						<div class="col-1">价:200元</div>
+						<div class="col-1">预:500元</div>
+						<div class="col-1">低:100元</div>
+					</div>
+				</div>-->
+				<!--can modify - end-->
+
+			</div>
+			<div class="dropTip"></div>
+		</div>
+	</div>
+
+</body>
+<script>
+	$(function(){
+		$('.p_container').pagination({
+			num:5,
+			ajaxEvent:function(me){
+				$.ajax({
+	                type: 'GET',
+	                url: 'server.php',
+	                dataType: 'json',
+	                cache:false,
+	                beforeSend:function(){
+	                	me.loadingTip(me);
+	                },
+	                success: function(data){
+	                    var result = '';
+	                    for(var i = 0; i < me.opts.num; i++){
+	                        result +=   '<div class="numSingle"><div class="rowContainer t2"><div class="col-2 phoneNum">'+data.lists[i].phoneNum+'</div><div class="col-1">价:'+data.lists[i].price+'元</div><div class="col-1">预:'+data.lists[i].yuPrice+'元</div><div class="col-1">低:'+data.lists[i].diPrice+'元</div></div></div>';
+	                    }
+
+	                    // 为了测试，延迟1秒加载
+	                    setTimeout(function(){
+	                        $('.p_lists').append(result);
+
+		                    //隐藏底部提示信息栏
+		                    me.hideTip();
+	                    },1000);
+
+
+	                    _flag = true;//解决scroll多次执行事件BUG，不能丢
+	                },
+	                error: function(xhr, type){
+	                    //alert('Ajax error!');
+	                }
+	            });
+			},
+		});
+	});
+</script>
+</html>

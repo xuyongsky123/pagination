@@ -1,0 +1,20 @@
+div {
+	  box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+.p_container {height:400px;overflow: hidden;overflow-y:scroll;}
+.i_container {overflow: hidden;zoom:1;}
+.p_lists {overflow: hidden;zoom:1;}
+.dropTip {text-align:center;height: 40px;line-height: 40px;overflow: hidden;zoom:1;}
+.dropTip span {display:inline-block;*display:inline;*zoom:1;height: 40px;line-height: 40px;margin:0 auto;vertical-align: middle;}
+.dropTip span i {display: inline-block;*display:inline;*zoom:1;width:24px;margin-right:10px;height: 24px;background:url(images/miniLoading.gif) 0 0 no-repeat;background-size: 24px 24px;vertical-align:middle;}
+
+
+
+.numSingle {cursor:pointer;padding:0 10px;height:45px;line-height:45px;background-color: #999;border-top: 1px solid #f0eff5;width: 100%;overflow: hidden;zoom:1;}
+.numSingleClick {color: #fff;background-color: #ff9623;}
+.rowContainer {height:45px;line-height:45px;width: 100%;overflow: hidden;zoom:1;}
+.col-2 , .col-1 {float: left;text-align: left;}
+.col-2 {width: 40%;overflow: hidden;zoom:1;}
+.col-1 {width:20%;overflow: hidden;zoom:1;}
