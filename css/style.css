@@ -1,7 +1,9 @@
 div {
-	  box-sizing:border-box;
-	-moz-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
 	-webkit-box-sizing:border-box;
+		 -o-box-sizing:border-box;
+		-ms-box-sizing:border-box;
+	 	    box-sizing:border-box;
 }
 .p_container {height:400px;overflow: hidden;overflow-y:scroll;}
 .i_container {overflow: hidden;zoom:1;}

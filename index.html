@@ -34,7 +34,8 @@
 <script>
 	$(function(){
 		$('.p_container').pagination({
-			num:5,
+			num:5,//一次加载个数，插件默认一次加载5个
+			singleHeight:45,//单个循环dom高度，用于初次加载初始化（计算刚刚开始需要加载次数）
 			ajaxEvent:function(me){
 				$.ajax({
 	                type: 'GET',
@@ -46,6 +47,7 @@
 	                },
 	                success: function(data){
 	                    var result = '';
+	                    console.log(data.lists[0].phoneNum)
 	                    for(var i = 0; i < me.opts.num; i++){
 	                        result +=   '<div class="numSingle"><div class="rowContainer t2"><div class="col-2 phoneNum">'+data.lists[i].phoneNum+'</div><div class="col-1">价:'+data.lists[i].price+'元</div><div class="col-1">预:'+data.lists[i].yuPrice+'元</div><div class="col-1">低:'+data.lists[i].diPrice+'元</div></div></div>';
 	                    }
