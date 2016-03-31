@@ -14,7 +14,7 @@
 		<div class="i_container">
 			<div class="p_lists">
 
-				<!--can modify - begin-->
+				<!-- 数据循环 - begin -->
 				<!--<div class="numSingle">
 					<div class="rowContainer">
 						<div class="col-2">18911594604</div>
@@ -23,7 +23,7 @@
 						<div class="col-1">低:100元</div>
 					</div>
 				</div>-->
-				<!--can modify - end-->
+				<!-- 数据循环 - end -->
 
 			</div>
 			<div class="dropTip"></div>
@@ -32,14 +32,26 @@
 
 </body>
 <script>
+
 	$(function(){
+		//var pageCurrent = 1;//当前页
+		//var pageEnd = 0;//总页数
+		//var numShow = 5;
+
+
+
 		$('.p_container').pagination({
-			num:5,//一次加载个数，插件默认一次加载5个
-			singleHeight:45,//单个循环dom高度，用于初次加载初始化（计算刚刚开始需要加载次数）
+			num:5,
+			pageCurrent:1,
+			pageAll:0,
 			ajaxEvent:function(me){
 				$.ajax({
-	                type: 'GET',
+	                type: 'POST',
 	                url: 'server.php',
+	                data:{
+	                	current:me.opts.pageCurrent, //需要的数据通过me.opts来调用
+	                	numShow:me.opts.num
+	                },
 	                dataType: 'json',
 	                cache:false,
 	                beforeSend:function(){
@@ -47,24 +59,47 @@
 	                },
 	                success: function(data){
 	                    var result = '';
-	                    console.log(data.lists[0].phoneNum)
-	                    for(var i = 0; i < me.opts.num; i++){
-	                        result +=   '<div class="numSingle"><div class="rowContainer t2"><div class="col-2 phoneNum">'+data.lists[i].phoneNum+'</div><div class="col-1">价:'+data.lists[i].price+'元</div><div class="col-1">预:'+data.lists[i].yuPrice+'元</div><div class="col-1">低:'+data.lists[i].diPrice+'元</div></div></div>';
-	                    }
+	                    me.opts.pageCurrent++;
+	                    me.opts.pageAll = data.pageNum;
 
-	                    // 为了测试，延迟1秒加载
-	                    setTimeout(function(){
-	                        $('.p_lists').append(result);
+	                    console.log(me.opts.pageAll)
+	                    console.log(me.opts.pageCurrent)
+	                    if(me.opts.pageCurrent-1 == me.opts.pageAll || me.opts.pageCurrent-1 < me.opts.pageAll){
+	                
+	                		console.log(me.opts.pageCurrent)
+	                    	for(var i = 0; i < data.lists.length; i++){
+		                        result +=   '<div class="numSingle"><div class="rowContainer t2"><div class="col-2 phoneNum">'+data.lists[i].phoneNum+'</div><div class="col-1">价:'+data.lists[i].price+'元</div><div class="col-1">预:'+data.lists[i].yuPrice+'元</div><div class="col-1">低:'+data.lists[i].diPrice+'元</div></div></div>';
+		                    }
 
-		                    //隐藏底部提示信息栏
-		                    me.hideTip();
-	                    },1000);
+		                    // 为了测试，延迟1秒加载
+		                    setTimeout(function(){
+		                        $('.p_lists').append(result);
+
+			                    //重置
+			                    //判断重置是否需要
+			                    if(me.opts.pageCurrent-1 < me.opts.pageAll){
+			                    	me.resetLoad();
+			                    }
+			                    
+			                    
+			                    if(me.opts.pageCurrent > me.opts.pageAll){
+			                    	//alert('后端数据个数过量，不符合前端请求个数');
+			                    	// 无数据
+					                me.noDataTip(me);
+			                    }
+			                    
+		                    },1000);
 
 
-	                    _flag = true;//解决scroll多次执行事件BUG，不能丢
+		                    _flag = true;//解决scroll多次执行事件BUG，不能丢
+
+	                    }      
+
+	                    
 	                },
 	                error: function(xhr, type){
-	                    //alert('Ajax error!');
+	                    alert('Ajax error!');
+	                    console.log(type)
 	                }
 	            });
 			},

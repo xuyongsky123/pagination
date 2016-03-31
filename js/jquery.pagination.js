@@ -4,7 +4,8 @@ var _flag = true; //解决scroll多次执行事件BUG，不能丢
 	//默认参数及其介绍
 	var defaults = {
 		num:5,		//一次加载个数
-		singleHeight:45, //单个循环dom高度，用于初次加载初始化（计算刚刚开始需要加载次数）
+		pageCurrent:1,
+		pageAll:0,
 		ajaxEvent:function(me){
 			$.noop();
 		},
@@ -12,12 +13,6 @@ var _flag = true; //解决scroll多次执行事件BUG，不能丢
 
 
 	$.fn.pagination = function(options){
-		//判断循环个体高度设置情况
-		if(!options.singleHeight){
-			alert('error ! singleHeight 为必须配置参数');
-			return;
-		}
-
 		var params = $.extend(defaults,options);
 		return new paginationInner(this,params);
 	}
@@ -36,34 +31,36 @@ var _flag = true; //解决scroll多次执行事件BUG，不能丢
 			}
 		},options);
 
-
-		//初始化加载单个循环dom高度判断
-		if(isNaN(me.opts.singleHeight)){
-			alert('error ! singleHeight 值不能为非数字');
-			return;
-		}
-
-	    //初始化加载
-	    var initTotalNum = Math.ceil(Math.ceil(($(ele).height()/me.opts.singleHeight)/me.opts.num));
-		var _inter = setInterval(function(){
-			if(initTotalNum > 0){
-				me.opts.ajaxEvent(me);
-				initTotalNum -- ;
-			}else{
-				clearInterval(_inter);
-			}
-		},500);
+		
+		//处理提前需加载
+		me.resetLoad();
 	    
 	    
-	    $(ele).on('scroll',function(){
-	    	if(_flag && $(this).scrollTop() >= $('.i_container').height() - $(this).height()){
-	    		setTimeout(function(){
-	    			me.opts.ajaxEvent(me);
-	    		},500);
-	    		_flag = false;
-	    	}
-	    });
 	};
+
+
+	//处理提前需加载
+	paginationInner.prototype.resetLoad = function(){
+		var me = this;
+		
+		var _h = $('.i_container').height();
+		var _hC = $('.p_container').height();
+
+		if(_h <= _hC){
+			me.opts.ajaxEvent(me);
+		}else{
+
+		    $('.p_container').on('scroll',function(){
+		    	if(_flag && $(this).scrollTop() >= $('.i_container').height() - $(this).height()){
+		    		setTimeout(function(){
+		    			me.opts.ajaxEvent(me);
+		    		},500);
+		    		_flag = false;
+		    	}
+		    });
+		}
+	}
+
 
 	//清空提示信息栏
 	paginationInner.prototype.hideTip = function(){
@@ -72,6 +69,7 @@ var _flag = true; //解决scroll多次执行事件BUG，不能丢
 	//无数据提示信息栏
 	paginationInner.prototype.noDataTip = function(me){
 		$('.dropTip').html(me.opts.tipText.domNoData);
+		$('.p_container').unbind();
 	}
 	//加载中信息提示栏
 	paginationInner.prototype.loadingTip = function(me){
